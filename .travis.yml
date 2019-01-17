@@ -1,0 +1,7 @@
+language: swift
+osx_image: xcode10.1
+before_install:
+  - swift package resolve
+script: swift build
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -J 'GitLabCli'

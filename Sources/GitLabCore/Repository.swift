@@ -9,7 +9,7 @@ import Foundation
 
 public protocol RepositoryType {
     func createMergeRequest(source: String, target: String, title: String, then callback: @escaping ((MergeRequest?, Error?) -> Void))
-    func listAll(then callback: @escaping (([MergeRequest]?, Error?) -> Void))
+    func listAll(with state: MergeRequest.State, then callback: @escaping (([MergeRequest]?, Error?) -> Void))
 }
 
 struct Repository: RepositoryType {
@@ -33,8 +33,8 @@ struct Repository: RepositoryType {
         network.request(endpoint, then: callback)
     }
 
-    func listAll(then callback: @escaping (([MergeRequest]?, Error?) -> Void)) {
-        let endpoint = MergeRequestEndpoint.list
+    func listAll(with state: MergeRequest.State, then callback: @escaping (([MergeRequest]?, Error?) -> Void)) {
+        let endpoint = MergeRequestEndpoint.list(state: state)
         network.request(endpoint, then: { (mergeRequests: [MergeRequest]?, error: Error?) in
             callback(mergeRequests, error)
         })

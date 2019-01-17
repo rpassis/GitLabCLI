@@ -27,6 +27,16 @@ public struct MergeRequest: Codable {
     }
 }
 
+public extension MergeRequest {
+    public enum State: String {
+        case opened
+        case closed
+        case locked
+        case merged
+    }
+
+}
+
 // Sample response
 // {"id":22458465,"iid":91,"project_id":9086951,"title":"SP-723 Updated onboarding cell leading and trailing margins",
 // "description":null,"state":"opened","created_at":"2019-01-15T16:56:28.182Z","updated_at":"2019-01-15T16:56:28.182Z",

@@ -11,6 +11,7 @@ import GitLabCore
 
 func mergeGroup(_ group: Group, _ repo: RepositoryType) {
     group.group("merge", closure: { g in
+
         g.command(
             "create",
             Option("source_branch", default: Git.getCurrentBranchName(), description: "The source branch for the MR."),
@@ -19,30 +20,31 @@ func mergeGroup(_ group: Group, _ repo: RepositoryType) {
         ) { source, target, title in
             repo.createMergeRequest(source: source, target: target, title: title) { mergeRequest, error in
                 guard let mergeRequest = mergeRequest else {
-                    let error = error ?? GitLabCliError.unknown
-                    print("Error sending request: \(error.localizedDescription)")
-                    exit(EXIT_FAILURE)
+                    exit(with: error); return
                 }
-                print("Pull request created at \n\(mergeRequest.web_url!)")
-                exit(EXIT_SUCCESS)
+                exit(withSuccessMessage: "Pull request created at \n\(mergeRequest.web_url!)")
             }
             dispatchMain()
         }
-        g.command("list", {
-            repo.listAll(then: { (mergeRequests, error) in
+        
+        g.command("list",
+            Option("state", default: MergeRequest.State.opened.rawValue, description: "The state of the pull request - possible values are opened, closed, merged and locked.")
+        ) { state in
+            guard let state = MergeRequest.State(rawValue: state) else {
+                exit(with: GitLabCliError.invalidOptions)
+                return
+            }
+            repo.listAll(with: state, then: { mergeRequests, error in
                 guard let mergeRequests = mergeRequests else {
-                    let error = error ?? GitLabCliError.unknown
-                    print("Error sending request: \(error.localizedDescription)")
-                    exit(EXIT_FAILURE)
+                    exit(with: error); return
                 }
-                print("Merge requests found:\n")
-                mergeRequests.forEach {
-                    let url = $0.web_url ?? ""
-                    print("\($0.title) @ \(url)")
-                }
-                exit(EXIT_SUCCESS)
+                let successMessage = mergeRequests.reduce(into: [[String]](), { (result, mr) in
+                    let row = [mr.title, mr.web_url ?? ""]
+                    result.append(row)
+                })
+                exit(withSuccessMessage: successMessage)
             })
             dispatchMain()
-        })
+        }
     })
 }

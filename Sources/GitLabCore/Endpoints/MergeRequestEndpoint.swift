@@ -10,7 +10,7 @@ import Foundation
 enum MergeRequestEndpoint: EndPointType {
 
     case create(MergeRequest)
-    case list
+    case list(state: MergeRequest.State)
 
     var method: HTTPMethod {
         switch self {
@@ -21,8 +21,8 @@ enum MergeRequestEndpoint: EndPointType {
 
     var parameters: Parameters? {
         switch self {
-        case .list:
-            return [Key.scope: "all"]
+        case .list(let state):
+            return [Key.state: state.rawValue]
         case .create(let mergeRequest):
             let removeSourceBranch = mergeRequest.remove_source_branch ?? false
             return [
@@ -60,7 +60,7 @@ enum MergeRequestEndpoint: EndPointType {
         static let sourceBranch             = "source_branch"
         static let targetBranch             = "target_branch"
         static let squash                   = "squash"
-        static let scope                    = "scope"
+        static let state                    = "state"
         static let removeSourceBranch       = "remove_source_branch"
     }
 
