@@ -4,20 +4,19 @@
 import PackageDescription
 
 let package = Package(
-    name: "GitLabCli",
+    name: "gitlab-cli",
     dependencies: [
-        .package(url: "https://github.com/kylef/Commander.git", from: "0.8.0"),
+        .package(url: "https://github.com/nsomar/Guaka.git", from: "0.3.1"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "4.4.0")
     ],
     targets: [
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages which this package depends on.
         .target(
-            name: "GitLabCli",
+            name: "gitlab-cli",
             dependencies: [
-                "Commander",
-                "GitLabCore",
-                "RxSwift"
+                "Guaka",
+                "GitLabCore"
             ],
             path: "Sources/GitLabCli"),
         .target(
@@ -28,6 +27,6 @@ let package = Package(
             path: "Sources/GitLabCore"),
         .testTarget(
             name: "gitlab-cliTests",
-            dependencies: ["GitLabCli"])
+            dependencies: ["gitlab-cli"])
     ]
 )

@@ -11,13 +11,13 @@ private let GitLabApiTokenEnvVar     = "GITLAB_API_TOKEN"
 private let GitLabProjectIdEnvVar    = "GITLAB_PROJECT_ID"
 private let GitLabAPIURLEnvVar       = "GITLAB_API_URL"
 
-struct Environment {
+public struct Environment {
 
-    static var current = Environment()
+    public static var current = Environment()
 
-    let gitlabToken: String
-    let projectId: Int
-    let endpointURL: URL
+    public let gitlabToken: String
+    public let projectId: Int
+    public let endpointURL: URL
 
     init(
         gitlabToken: String = gitLabTokenFromEnvironment(),
